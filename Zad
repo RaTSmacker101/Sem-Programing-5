@@ -8,6 +8,83 @@ struct Product {
     int id;
 };
 
+//OT 7 zad
+struct Employee {
+    int id;
+    double payPerHour;
+    double hours;
+};
+
+double calculateSalary(double payPerHour, double hours) {
+    double salary;
+
+    if (hours <= 40) {
+        salary = payPerHour * hours;
+    } else {
+        salary = 40 * payPerHour + (hours - 40) * payPerHour * 1.5;
+    }
+
+    salary = salary - salary * 0.0365;
+
+    return salary;
+}
+
+void addEmployee() {
+    FILE *file;
+    struct Employee emp, temp;
+    int count = 0;
+
+    file = fopen("employees.dat", "ab+");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    rewind(file);
+
+    while (fread(&temp, sizeof(struct Employee), 1, file) == 1) {
+        count++;
+    }
+
+    if (count >= 30) {
+        printf("Maximum number of employees reached.\n");
+        fclose(file);
+        return;
+    }
+
+    printf("Enter employee id: ");
+    scanf("%d", &emp.id);
+
+    printf("Enter pay per hour: ");
+    scanf("%lf", &emp.payPerHour);
+
+    printf("Enter worked hours: ");
+    scanf("%lf", &emp.hours);
+
+    fwrite(&emp, sizeof(struct Employee), 1, file);
+
+    fclose(file);
+    printf("Employee added successfully.\n");
+}
+
+void showSalaries() {
+    FILE *file;
+    struct Employee emp;
+    double salary;
+
+    file = fopen("employees.dat", "rb");
+    if (file == NULL) {
+        printf("File not found.\n");
+        return;
+    }
+
+    while (fread(&emp, sizeof(struct Employee), 1, file) == 1) {
+        salary = calculateSalary(emp.payPerHour, emp.hours);
+        printf("Employee ID: %d, Weekly salary: %.2lf\n", emp.id, salary);
+    }
+
+    fclose(file);
+}
 struct Order {
     char address[50];
     int id;
@@ -277,7 +354,62 @@ char word[100];
     } else {
         printf("You lose!\n");
     }
+//6 zad
+int anagram(char s1[], char s2[]) {
+    int count1[256] = {0};
+    int count2[256] = {0};
+    int i;
 
+    if (strlen(s1) != strlen(s2)) {
+        return 0;
+    }
+
+    for (i = 0; s1[i] != '\0'; i++) {
+        count1[(unsigned char)s1[i]]++;
+        count2[(unsigned char)s2[i]]++;
+    }
+
+    for (i = 0; i < 256; i++) {
+        if (count1[i] != count2[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int main() {
+    char a[50], b[50];
+
+    scanf("%s", a);
+    scanf("%s", b);
+
+    if (anagram(a, b)) {
+        printf("1\n");
+    } else {
+        printf("0\n");
+    }
 */
+//7 zad
+int choice;
+
+    do {
+        printf("\n1. Add employee\n");
+        printf("2. Show salaries\n");
+        printf("0. Exit\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            addEmployee();
+        } else if (choice == 2) {
+            showSalaries();
+        } else if (choice == 0) {
+            printf("Program ended.\n");
+        } else {
+            printf("Invalid choice.\n");
+        }
+
+    } while (choice != 0);
     return 0;
 }
