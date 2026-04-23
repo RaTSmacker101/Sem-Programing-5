@@ -1,0 +1,283 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// OT 2 zad
+struct Product {
+    char name[50];
+    int id;
+};
+
+struct Order {
+    char address[50];
+    int id;
+};
+
+int main() {
+  //1 ZAD
+/*
+    int guests;
+    scanf("%d", &guests);
+
+    char command[20];
+
+    int tables = 0;
+    int chairs = 0;
+    int cups = 0;
+    int dishes = 0;
+
+    double total = 0.0;
+
+    while (1) {
+        scanf("%s", command);
+
+        if (strcmp(command, "PARTY!") == 0) {
+            break;
+        }
+
+        if (strcmp(command, "Table") == 0) {
+            tables++;
+            total += 42.00;
+        }
+        else if (strcmp(command, "Chair") == 0) {
+            chairs++;
+            total += 13.99;
+        }
+        else if (strcmp(command, "Cups") == 0) {
+            cups += 6;
+            total += 5.98;
+        }
+        else if (strcmp(command, "Dishes") == 0) {
+            dishes += 6;
+            total += 21.02;
+        }
+    }
+
+    int neededTables = 0;
+    int neededChairs = 0;
+    int neededDishes = 0;
+
+    if (tables * 8 < guests) {
+        neededTables = (guests - tables * 8 + 7) / 8;
+    }
+
+    if (chairs < guests) {
+        neededChairs = guests - chairs;
+    }
+
+    if (dishes < guests) {
+        neededDishes = (guests - dishes + 5) / 6;
+    }
+
+    printf("%.2lf\n", total);
+    printf("%d Table\n", neededTables);
+    printf("%d Chairs\n", neededChairs);
+    printf("%d Dishes\n", neededDishes);
+// 2 zad
+
+    struct Product products[100];
+    struct Order orders[100];
+
+    int pCount = 0;
+    int oCount = 0;
+
+    char command[20];
+
+    while (1) {
+        scanf("%s", command);
+
+        if (strcmp(command, "END") == 0) {
+            break;
+        }
+
+        if (strcmp(command, "Product") == 0) {
+            char name[50];
+            double price;
+            int id;
+
+            scanf("%s", name);
+            scanf("%lf", &price);
+            scanf("%d", &id);
+
+            strcpy(products[pCount].name, name);
+            products[pCount].id = id;
+            pCount++;
+
+            for (int i = 0; i < oCount; i++) {
+                if (orders[i].id == id) {
+                    printf("Client %s ordered %s\n", orders[i].address, name);
+                }
+            }
+        }
+
+        if (strcmp(command, "Order") == 0) {
+            char address[50];
+            int id;
+            int found = 0;
+
+            scanf("%s", address);
+            scanf("%d", &id);
+
+            for (int i = 0; i < pCount; i++) {
+                if (products[i].id == id) {
+                    printf("Client %s ordered %s\n", address, products[i].name);
+                    found = 1;
+                }
+            }
+
+            if (found == 0) {
+                strcpy(orders[oCount].address, address);
+                orders[oCount].id = id;
+                oCount++;
+            }
+        }
+    }
+//ZAD 3
+FILE *in, *bin;
+    char word[51];
+    char **arr = NULL;
+    int count = 0;
+
+    in = fopen("input.txt", "r");
+    if (in == NULL) {
+        printf("Cannot open input file.\n");
+        return 1;
+    }
+
+    while (fscanf(in, "%s", word) == 1) {
+        int len = strlen(word);
+
+        if (word[0] == word[len - 1]) {
+            arr = realloc(arr, (count + 1) * sizeof(char *));
+            arr[count] = malloc((len + 1) * sizeof(char));
+            strcpy(arr[count], word);
+            count++;
+        }
+    }
+
+    fclose(in);
+
+    bin = fopen("words.bin", "wb");
+    if (bin == NULL) {
+        printf("Cannot open binary file.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < count; i++) {
+        fwrite(arr[i], sizeof(char), strlen(arr[i]), bin);
+        fputc(' ', bin);
+    }
+
+    fclose(bin);
+
+    bin = fopen("words.bin", "rb");
+    if (bin == NULL) {
+        printf("Cannot open binary file.\n");
+        return 1;
+    }
+
+    char ch;
+    while ((ch = fgetc(bin)) != EOF) {
+        printf("%c", ch);
+    }
+
+    fclose(bin);
+
+    for (int i = 0; i < count; i++) {
+        free(arr[i]);
+    }
+    free(arr);
+// 4 zad
+char fileName[50];
+    int key;
+    FILE *in, *out;
+    char ch;
+
+    scanf("%s", fileName);
+    scanf("%d", &key);
+
+    in = fopen(fileName, "r");
+    if (in == NULL) {
+        printf("Cannot open input file.\n");
+        return 1;
+    }
+
+    out = fopen("coded.txt", "w");
+    if (out == NULL) {
+        printf("Cannot open output file.\n");
+        fclose(in);
+        return 1;
+    }
+
+    while ((ch = fgetc(in)) != EOF) {
+        ch = ch + key;
+        fputc(ch, out);
+    }
+
+    fclose(in);
+    fclose(out);
+// 5 zad
+char word[100];
+    char guessed[100];
+    char letter;
+    int len, count = 0, found, done;
+
+    scanf("%s", word);
+
+    len = strlen(word);
+
+    for (int i = 0; i < len; i++) {
+        guessed[i] = '_';
+    }
+    guessed[len] = '\0';
+
+    while (1) {
+        printf("%s\n", guessed);
+
+        done = 1;
+        for (int i = 0; i < len; i++) {
+            if (guessed[i] == '_') {
+                done = 0;
+                break;
+            }
+        }
+
+        if (done) {
+            break;
+        }
+
+        if (count > len + 1) {
+            break;
+        }
+
+        scanf(" %c", &letter);
+        count++;
+
+        found = 0;
+        for (int i = 0; i < len; i++) {
+            if (word[i] == letter) {
+                guessed[i] = letter;
+                found = 1;
+            }
+        }
+    }
+
+    printf("%s\n", guessed);
+
+    done = 1;
+    for (int i = 0; i < len; i++) {
+        if (guessed[i] == '_') {
+            done = 0;
+            break;
+        }
+    }
+
+    if (done && count <= len + 2) {
+        printf("You win!\n");
+    } else {
+        printf("You lose!\n");
+    }
+
+*/
+    return 0;
+}
